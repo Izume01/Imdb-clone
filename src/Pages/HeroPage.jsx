@@ -1,4 +1,5 @@
 import { UserRound } from 'lucide-react';
+import { Link } from 'react-router';
 import MovieComponent from '../Components/MovieComponent';
 
 export  default  function HeroPage() {
@@ -13,9 +14,10 @@ export  default  function HeroPage() {
                     </div>
 
                     <div className='flex gap-6 text-lg font-thin'>
-                        <a href="/">Home</a>
-                        <a href="/about">Trending</a>
-                        <a href="/contact">Popular</a>
+                        <Link to={'/'}>Home</Link>
+                        <Link to={'/popular'}>Popular</Link>
+                        <Link to={'/trending'}>Trending</Link>
+
                     </div>
 
                     <div>

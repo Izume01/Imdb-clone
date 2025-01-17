@@ -1,8 +1,8 @@
 export default function MovieComponent() {
     return (
-        <div className='relative rounded-2xl overflow-hidden flex gap-4 w-[300px] h-[400px]'>
+        <div className='relative rounded-2xl overflow-hidden flex gap-4 w-[300px] h-[400px] shadow-inner'>
             <div className="w-full h-full rounded-lg overflow-hidden">
-                <img src="https://marketplace.canva.com/EAFTl0ixW_k/1/0/1131w/canva-black-white-minimal-alone-movie-poster-YZ-0GJ13Nc8.jpg" alt="" 
+                <img src="https://cdn.prod.website-files.com/6009ec8cda7f305645c9d91b/66a4263d01a185d5ea22eeec_6408f6e7b5811271dc883aa8_batman-min.png" alt="" 
                     className="w-full h-full object-cover"
                 />
             </div>
@@ -17,9 +17,3 @@ export default function MovieComponent() {
     )
 }
 
-// Make Popular Component
-// Make Trending Component
-// Movie Details Component
-// Filter Movie / Sort 
-// Pagination
-// Tags 
