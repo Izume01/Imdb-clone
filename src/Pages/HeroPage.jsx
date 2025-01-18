@@ -10,11 +10,19 @@ export  default  function HeroPage() {
     const [search, setSearch] = useState('');
 
     const handleSearch = (event) => {
-        setSearch(event.target.value);
+        if(event.type === 'change') {
+            setSearch(event.target.value);
+        }
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const handleSearchButton = (event) => {
+        if(event.type === 'click' && search.trim()) {
+            FetchMovie();
+        }
+    }
+
     const FetchMovie = async () => {
+        if (!search.trim()) return;
         try {
             const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
             const response = await axios.get('https://api.themoviedb.org/3/search/movie', {
@@ -34,8 +42,13 @@ export  default  function HeroPage() {
     }
 
     useEffect(() => {
-        FetchMovie();
-    } , [FetchMovie]);
+        if (search.trim()) {
+            const timeoutId = setTimeout(() => {
+                FetchMovie();
+            }, 500);
+            return () => clearTimeout(timeoutId);
+        }
+    }, [search]);
 
     const movieList = movies.map((movie) => {
         return (
@@ -84,7 +97,7 @@ export  default  function HeroPage() {
 
                     <div className=' flex gap-4 p-4 rounded-lg max-w-[700px] mx-auto'>
                         <input type="text" className='w-full px-4 py-3 rounded-3xl text-black' onChange={handleSearch} />
-                        <button className='text-black bg-white px-8 rounded-3xl'>Search</button>
+                        <button className='text-black bg-white px-8 rounded-3xl' onClick={handleSearchButton}>Search</button>
                     </div>
                 </div>
 

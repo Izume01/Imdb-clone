@@ -12,7 +12,7 @@ A web application for browsing and managing movie information.
 ## TODO
 - [ X ] Make Popular Component
 - [ X ] Make Trending Component
-- [ ] Search Ability Component
+- [ X ] Search Ability Component
 - [ ] Movie Details Component
 - [ ] Context API 
 - [ ] Infinite Scroll

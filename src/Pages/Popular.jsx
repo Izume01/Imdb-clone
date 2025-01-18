@@ -28,7 +28,7 @@ export default function Popular() {
   useEffect(() => {
     fetchMovie();
     console.log(movies);
-  }, []);
+  }, [movies]);
 
   const movieList = movies.map((movie) => {
     return (
