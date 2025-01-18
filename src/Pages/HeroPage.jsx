@@ -1,8 +1,57 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { UserRound } from 'lucide-react';
 import { Link } from 'react-router';
 import MovieComponent from '../Components/MovieComponent';
 
 export  default  function HeroPage() {
+
+    const [movies, setMovies] = useState([]);
+    const [search, setSearch] = useState('');
+
+    const handleSearch = (event) => {
+        setSearch(event.target.value);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const FetchMovie = async () => {
+        try {
+            const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+            const response = await axios.get('https://api.themoviedb.org/3/search/movie', {
+                headers: {
+                    accept: 'application/json',
+                    Authorization: `${TMDB_API_KEY}`
+                }, 
+                params : {
+                    query : `${search}`
+                }
+            });
+
+            setMovies(response.data.results);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        FetchMovie();
+    } , [FetchMovie]);
+
+    const movieList = movies.map((movie) => {
+        return (
+            <MovieComponent
+                key={movie.id}
+                title={movie.title}
+                // poster={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                poster= {movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM='}
+                overview={movie.overview}
+                rating={movie.vote_average}
+                info={movie}
+
+            />
+        )
+    })
+
     return (
         // Wrapper Class
         <div className='bg-black text-white'>
@@ -10,7 +59,7 @@ export  default  function HeroPage() {
                 {/* NavBar */}
                 <nav className='flex justify-between items-center py-6 px-8  '>
                     <div className="text-2xl font-bold">
-                        <h1>Logo</h1>
+                        <Link to={'/'}>Logo</Link>
                     </div>
 
                     <div className='flex gap-6 text-lg font-thin'>
@@ -34,7 +83,7 @@ export  default  function HeroPage() {
                     </div>
 
                     <div className=' flex gap-4 p-4 rounded-lg max-w-[700px] mx-auto'>
-                        <input type="text" className='w-full px-4 py-3 rounded-3xl text-black' />
+                        <input type="text" className='w-full px-4 py-3 rounded-3xl text-black' onChange={handleSearch} />
                         <button className='text-black bg-white px-8 rounded-3xl'>Search</button>
                     </div>
                 </div>
@@ -42,12 +91,8 @@ export  default  function HeroPage() {
                 {/* Grid Container */}
 
                 <div className='mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 p-10 gap-8 mt-20'>
-                    <MovieComponent />
-                    <MovieComponent />
-                    <MovieComponent />
-                    <MovieComponent />
-                    <MovieComponent />
-                    <MovieComponent />
+                        {/* Movie Component */}
+                        {movieList}
                 </div>
             </div>
         </div>
