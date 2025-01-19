@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import MovieComponent from "../Components/MovieComponent";
-import { UserRound } from "lucide-react";
+import { UserRound, Menu, X } from "lucide-react";
 import { Link } from "react-router";
 
 export default function Trending() {
   const [movies, setMovies] = useState([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   const fetchMovie = async () => {
     try {
@@ -20,10 +25,8 @@ export default function Trending() {
         }
       );
 
-      // Log data directly after getting the response
       console.log(response.data.results);
-
-      setMovies(response.data.results); // Update the state with movie data
+      setMovies(response.data.results);
     } catch (error) {
       console.error(error);
     }
@@ -33,7 +36,6 @@ export default function Trending() {
     fetchMovie();
   }, []);
 
-  // Map through movies state to render MovieComponent
   const movieList = movies.map((movie) => {
     return (
       <MovieComponent
@@ -48,36 +50,55 @@ export default function Trending() {
   });
 
   return (
-    <div className="bg-black text-white">
-      <div className="min-h-screen mx-auto max-w-[1400px] flex flex-col font-karla">
+    <div className="bg-black text-white min-h-screen">
+      <div className="mx-auto max-w-[1400px] flex flex-col font-karla">
         {/* NavBar */}
-        <nav className="flex justify-between items-center py-6 px-8  ">
-          <div className="text-2xl font-bold">
+        <nav className="relative flex justify-between items-center py-4 px-4 md:py-6 md:px-8">
+          <div className="text-xl md:text-2xl font-bold">
             <Link to={"/"}>Logo</Link>
           </div>
 
-          <div className="flex gap-6 text-lg font-thin">
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden z-50" 
+            onClick={toggleMenu}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex gap-6 text-lg font-thin">
             <Link to={"/"}>Home</Link>
             <Link to={"/popular"}>Popular</Link>
             <Link to={"/trending"}>Trending</Link>
           </div>
 
-          <div>
+          {/* Mobile Navigation */}
+          <div 
+            className={`${
+              isMenuOpen ? 'flex' : 'hidden'
+            } md:hidden absolute top-0 right-0 h-screen w-64 bg-gray-900 flex-col items-center pt-20 gap-8 text-lg font-thin`}
+          >
+            <Link to={"/"} onClick={toggleMenu}>Home</Link>
+            <Link to={"/popular"} onClick={toggleMenu}>Popular</Link>
+            <Link to={"/trending"} onClick={toggleMenu}>Trending</Link>
+          </div>
+
+          <div className="hidden md:block">
             <UserRound className="text-2xl" />
           </div>
         </nav>
 
-
-        {/* Text */}
-        <div className="text-center mb-8 mt-20 flex flex-col items-center gap-2">
-          <h1 className="text-5xl font-bold">Trending Movies</h1>
-          <p className="max-w-5xl mt-2 text-2xl font-sans text-white">
+        {/* Text Section */}
+        <div className="text-center px-4 mb-8 mt-12 md:mt-20 flex flex-col items-center gap-2">
+          <h1 className="text-3xl md:text-5xl font-bold">Trending Movies</h1>
+          <p className="max-w-5xl mt-2 text-lg md:text-2xl font-sans text-white px-4">
             Uncover the secrets behind the films everyone&apos;s talking about
           </p>
         </div>
 
         {/* Grid Container */}
-        <div className="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 p-10 gap-8">
+        <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 p-4 md:p-10">
           {movieList}
         </div>
       </div>

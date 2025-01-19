@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { UserRound } from 'lucide-react';
+import { UserRound, Menu, X } from 'lucide-react';
 import { Link } from 'react-router';
 import MovieComponent from '../Components/MovieComponent';
 
-export  default  function HeroPage() {
-
+export default function HeroPage() {
     const [movies, setMovies] = useState([]);
     const [search, setSearch] = useState('');
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleSearch = (event) => {
         if(event.type === 'change') {
@@ -19,6 +19,10 @@ export  default  function HeroPage() {
         if(event.type === 'click' && search.trim()) {
             FetchMovie();
         }
+    }
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
     }
 
     const FetchMovie = async () => {
@@ -55,57 +59,76 @@ export  default  function HeroPage() {
             <MovieComponent
                 key={movie.id}
                 title={movie.title}
-                // poster={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                poster= {movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM='}
+                poster={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM='}
                 overview={movie.overview}
                 rating={movie.vote_average}
                 info={movie}
-
             />
         )
     })
 
     return (
-        // Wrapper Class
-        <div className='bg-black text-white'>
-            <div className="min-h-screen mx-auto max-w-[1400px] flex flex-col font-karla">
+        <div className='bg-black text-white min-h-screen'>
+            <div className="mx-auto max-w-[1400px] flex flex-col font-karla">
                 {/* NavBar */}
-                <nav className='flex justify-between items-center py-6 px-8  '>
-                    <div className="text-2xl font-bold">
+                <nav className='relative flex justify-between items-center py-4 px-4 md:py-6 md:px-8'>
+                    <div className="text-xl md:text-2xl font-bold">
                         <Link to={'/'}>Logo</Link>
                     </div>
 
-                    <div className='flex gap-6 text-lg font-thin'>
+                    {/* Mobile Menu Button */}
+                    <button 
+                        className='md:hidden z-50'
+                        onClick={toggleMenu}
+                    >
+                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+
+                    {/* Desktop Navigation */}
+                    <div className='hidden md:flex gap-6 text-lg font-thin'>
                         <Link to={'/'}>Home</Link>
                         <Link to={'/popular'}>Popular</Link>
                         <Link to={'/trending'}>Trending</Link>
-
                     </div>
 
-                    <div>
+                    {/* Mobile Navigation */}
+                    <div className={`${isMenuOpen ? 'flex' : 'hidden'} md:hidden absolute top-0 right-0 h-screen w-64 bg-gray-900 flex-col items-center pt-20 gap-8 text-lg font-thin`}>
+                        <Link to={'/'} onClick={toggleMenu}>Home</Link>
+                        <Link to={'/popular'} onClick={toggleMenu}>Popular</Link>
+                        <Link to={'/trending'} onClick={toggleMenu}>Trending</Link>
+                    </div>
+
+                    <div className='hidden md:block'>
                         <UserRound className='text-2xl'/>
                     </div>
                 </nav>
 
-                {/* Search Button */}
-
-                <div className='text-white'>
-                    <div className='text-center mb-8 mt-20 flex flex-col items-center gap-2'>
-                        <h1 className='text-7xl'>Your Next Favorite Movie</h1>
-                        <p className='max-w-[600px]'>Search our extensive database for movies by title, genre, or director. Find the perfect film for your next movie night!</p>
+                {/* Search Section */}
+                <div className='text-white px-4 md:px-8'>
+                    <div className='text-center mb-8 mt-12 md:mt-20 flex flex-col items-center gap-2 px-4'>
+                        <h1 className='text-4xl md:text-7xl font-bold'>Your Next Favorite Movie</h1>
+                        <p className='max-w-[600px] text-sm md:text-base mt-4'>Search our extensive database for movies by title, genre, or director. Find the perfect film for your next movie night!</p>
                     </div>
 
-                    <div className=' flex gap-4 p-4 rounded-lg max-w-[700px] mx-auto'>
-                        <input type="text" className='w-full px-4 py-3 rounded-3xl text-black' onChange={handleSearch} />
-                        <button className='text-black bg-white px-8 rounded-3xl' onClick={handleSearchButton}>Search</button>
+                    <div className='flex flex-col sm:flex-row gap-4 p-4 rounded-lg max-w-[700px] mx-auto'>
+                        <input 
+                            type="text" 
+                            className='w-full px-4 py-3 rounded-3xl text-black'
+                            onChange={handleSearch}
+                            placeholder="Search for movies..."
+                        />
+                        <button 
+                            className='text-black bg-white px-8 py-2 rounded-3xl sm:w-auto w-full'
+                            onClick={handleSearchButton}
+                        >
+                            Search
+                        </button>
                     </div>
                 </div>
 
                 {/* Grid Container */}
-
-                <div className='mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 p-10 gap-8 mt-20'>
-                        {/* Movie Component */}
-                        {movieList}
+                <div className='mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 p-4 md:p-10 mt-12 md:mt-20'>
+                    {movieList}
                 </div>
             </div>
         </div>
