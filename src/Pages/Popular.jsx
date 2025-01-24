@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import MovieComponent from "../Components/MovieComponent";
-import { UserRound } from "lucide-react";
-import { Link } from "react-router";
+
+import Navbar from "../Components/Navbar";
 
 export default function Popular() {
   const [movies, setMovies] = useState([]);
@@ -46,22 +46,7 @@ export default function Popular() {
   return (
     <div className="bg-black text-white">
       <div className="min-h-screen mx-auto max-w-[1400px] flex flex-col font-karla">
-        {/* NavBar */}
-        <nav className="flex justify-between items-center py-6 px-8  ">
-          <div className="text-2xl font-bold">
-            <Link to={"/"}>Logo</Link>
-          </div>
-
-          <div className="flex gap-6 text-lg font-thin">
-            <Link to={"/"}>Home</Link>
-            <Link to={"/popular"}>Popular</Link>
-            <Link to={"/trending"}>Trending</Link>
-          </div>
-
-          <div>
-            <UserRound className="text-2xl" />
-          </div>
-        </nav>
+        <Navbar />
 
         {/* Text */}
         <div className="text-center mb-8 mt-10 flex flex-col items-center gap-2">

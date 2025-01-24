@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { UserRound, Menu, X } from 'lucide-react';
-import { Link } from 'react-router';
+
+import Navbar from '../Components/Navbar';
 import MovieComponent from '../Components/MovieComponent';
 
 export default function HeroPage() {
-    const [movies, setMovies] = useState([]);
+    const [SearchList, setSearchlist] = useState([]);
     const [search, setSearch] = useState('');
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleSearch = (event) => {
         if(event.type === 'change') {
@@ -21,15 +20,13 @@ export default function HeroPage() {
         }
     }
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    }
+    
 
-    const FetchMovie = async () => {
+    const FetchMovie = useCallback(async () => {
         if (!search.trim()) return;
         try {
             const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-            const response = await axios.get('https://api.themoviedb.org/3/search/movie', {
+            const response = await axios.get('https://api.themoviedb.org/3/search/multi', {
                 headers: {
                     accept: 'application/json',
                     Authorization: `${TMDB_API_KEY}`
@@ -39,11 +36,11 @@ export default function HeroPage() {
                 }
             });
 
-            setMovies(response.data.results);
+            setSearchlist(response.data.results);
         } catch (error) {
             console.log(error);
         }
-    }
+    }, [search]);
 
     useEffect(() => {
         if (search.trim()) {
@@ -52,9 +49,9 @@ export default function HeroPage() {
             }, 500);
             return () => clearTimeout(timeoutId);
         }
-    }, [search]);
+    }, [search, FetchMovie]);
 
-    const movieList = movies.map((movie) => {
+    const movieList = SearchList.map((movie) => {
         return (
             <MovieComponent
                 key={movie.id}
@@ -70,38 +67,7 @@ export default function HeroPage() {
     return (
         <div className='bg-black text-white min-h-screen'>
             <div className="mx-auto max-w-[1400px] flex flex-col font-karla">
-                {/* NavBar */}
-                <nav className='relative flex justify-between items-center py-4 px-4 md:py-6 md:px-8'>
-                    <div className="text-xl md:text-2xl font-bold">
-                        <Link to={'/'}>Logo</Link>
-                    </div>
-
-                    {/* Mobile Menu Button */}
-                    <button 
-                        className='md:hidden z-50'
-                        onClick={toggleMenu}
-                    >
-                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
-
-                    {/* Desktop Navigation */}
-                    <div className='hidden md:flex gap-6 text-lg font-thin'>
-                        <Link to={'/'}>Home</Link>
-                        <Link to={'/popular'}>Popular</Link>
-                        <Link to={'/trending'}>Trending</Link>
-                    </div>
-
-                    {/* Mobile Navigation */}
-                    <div className={`${isMenuOpen ? 'flex' : 'hidden'} md:hidden absolute top-0 right-0 h-screen w-64 bg-gray-900 flex-col items-center pt-20 gap-8 text-lg font-thin`}>
-                        <Link to={'/'} onClick={toggleMenu}>Home</Link>
-                        <Link to={'/popular'} onClick={toggleMenu}>Popular</Link>
-                        <Link to={'/trending'} onClick={toggleMenu}>Trending</Link>
-                    </div>
-
-                    <div className='hidden md:block'>
-                        <UserRound className='text-2xl'/>
-                    </div>
-                </nav>
+                <Navbar/>
 
                 {/* Search Section */}
                 <div className='text-white px-4 md:px-8'>
